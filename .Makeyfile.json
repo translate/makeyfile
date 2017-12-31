@@ -1,0 +1,21 @@
+{
+    "sequence": {
+	"setup": [],
+	"lint": ["lint-py"],
+	"lint-py": ["flake8"],
+	"test": ["test-py"],
+	"test-coverage": ["test-coverage-py"],
+	"travis-run": ["test-coverage", "lint"],
+	"send-coverage": ["send-coverage-py"]
+    },
+    "python": {
+    },
+    "shell": {
+	".": "",
+	"git": "git",
+	"test-py": "py.test -vv",
+	"test-coverage-py": "py.test -vv --cov-report=term --cov=. -v --duration=25",
+	"flake8": "flake8 .",
+	"send-coverage-py": "codecov"
+    }
+}

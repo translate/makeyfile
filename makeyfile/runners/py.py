@@ -8,7 +8,7 @@ from .base import BaseRunner
 
 class PythonRunner(BaseRunner):
 
-    def __call__(self, cb, makeyfile, command, *args):
+    def __call__(self, cb, command, *args):
         return cb(command, *args[1:])
 
     def resolve_module(self, command):

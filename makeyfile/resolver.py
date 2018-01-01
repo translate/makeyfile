@@ -14,7 +14,10 @@ class Resolver(object):
     def commands(self):
         _commands = []
         for k in self.makeyfile.runners.keys():
-            _commands += zip(self.makey[k].keys(), [k] * len(self.makey[k]))
+            if k in self.makey.keys():
+                _commands += zip(
+                    self.makey[k].keys(),
+                    [k] * len(self.makey[k]))
         return OrderedDict(_commands)
 
     def get_handler(self, name):

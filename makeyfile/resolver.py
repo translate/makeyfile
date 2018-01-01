@@ -9,7 +9,7 @@ class Resolver(object):
         self.makey = makeyfile.makey
 
     def resolve(self, command):
-        for k in self.makeyfile.registry["runner"].keys():
+        for k in self.makeyfile.runners.keys():
             try:
                 return self.resolve_registered(k, command)
             except UnrecognizedMakeyError:
@@ -21,7 +21,7 @@ class Resolver(object):
             command = self.makey[registered][command]
             return (
                 registered,
-                self.makeyfile.registry["runner"][registered].resolve(command))
+                self.makeyfile.runners[registered].resolve(command))
         except KeyError:
             raise UnrecognizedMakeyError(
                 'Unrecognized makey command: %s'

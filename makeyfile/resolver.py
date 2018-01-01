@@ -17,8 +17,13 @@ class Resolver(object):
             _commands += zip(self.makey[k].keys(), [k] * len(self.makey[k]))
         return OrderedDict(_commands)
 
+    def get_handler(self, name):
+        return self.makeyfile.runners[name]
+
     def resolve(self, command):
         if command not in self.commands:
             raise UnrecognizedMakeyError()
         resolved = self.commands[command]
-        return resolved, self.makey[resolved][command]
+        return (
+            resolved,
+            self.get_handler(resolved).resolve(self.makey[resolved][command]))

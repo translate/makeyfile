@@ -9,7 +9,9 @@ def test_registry_defaults():
     assert "runner" in registry
     assert isinstance(registry["runner"], dict)
     assert list(registry) == ["runner"]
-    assert registry["runner"].keys() == ['sequence', 'python', 'shell']
+    assert (
+        registry["runner"].keys()
+        == ['sequence', 'python', 'shell', 'command'])
 
 
 def test_registry_register():

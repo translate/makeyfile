@@ -11,8 +11,6 @@
     "python": {
     },
     "shell": {
-	".": "",
-	"git": "git",
 	"test-py": "py.test -vv",
 	"test-coverage-py": "py.test -vv --cov-report=term --cov=. -v --duration=25",
 	"flake8": "flake8 .",

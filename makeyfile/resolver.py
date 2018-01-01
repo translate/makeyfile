@@ -1,4 +1,6 @@
 
+from collections import OrderedDict
+
 from .exceptions import UnrecognizedMakeyError
 
 
@@ -8,21 +10,15 @@ class Resolver(object):
         self.makeyfile = makeyfile
         self.makey = makeyfile.makey
 
-    def resolve(self, command):
+    @property
+    def commands(self):
+        _commands = []
         for k in self.makeyfile.runners.keys():
-            try:
-                return self.resolve_registered(k, command)
-            except UnrecognizedMakeyError:
-                pass
-        raise UnrecognizedMakeyError()
+            _commands += zip(self.makey[k].keys(), [k] * len(self.makey[k]))
+        return OrderedDict(_commands)
 
-    def resolve_registered(self, registered, command):
-        try:
-            command = self.makey[registered][command]
-            return (
-                registered,
-                self.makeyfile.runners[registered].resolve(command))
-        except KeyError:
-            raise UnrecognizedMakeyError(
-                'Unrecognized makey command: %s'
-                % command)
+    def resolve(self, command):
+        if command not in self.commands:
+            raise UnrecognizedMakeyError()
+        resolved = self.commands[command]
+        return resolved, self.makey[resolved][command]

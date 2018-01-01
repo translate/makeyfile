@@ -37,23 +37,6 @@ def test_runner_defaults():
     assert runner.makey == [23]
 
 
-def __test_runner_resolve():
-    makey_m = MagicMock()
-    makey_makey_p = PropertyMock(return_value=[23])
-    type(makey_m).makey = makey_makey_p
-    resolve_m = MagicMock()
-    resolve_m2 = MagicMock(return_value=("foo0", "bar0"))
-    resolve_m.resolve = resolve_m2
-    resolver_p = PropertyMock(return_value=resolve_m)
-    type(makey_m).resolver = resolver_p
-    runner = Runner(makey_m)
-    runner.makeyfile.resolver.resolve("x")
-    result = runner.resolve("foo")
-    assert resolve_m2.call_args[0] == ("foo", )
-    assert resolver_p.called is True
-    assert result == ('foo0', 'bar0')
-
-
 def test_runner_command():
     makey_m = MagicMock()
     makey_makey_p = PropertyMock(return_value=[23])

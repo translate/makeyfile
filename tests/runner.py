@@ -75,7 +75,7 @@ def test_runner_run():
                 result = runner.run("foo", "bar", "baz")
                 assert resolve_m.call_args[0] == ("foo", )
     assert handler_m.call_args[0] == ("somehandler", )
-    assert handler.call_args[0] == (23, makey_mock, 2, 'foo', 'bar', 'baz')
+    assert handler.call_args[0] == (23, 2, 'foo', 'bar', 'baz')
     assert result == 7
 
 
@@ -85,14 +85,12 @@ def test_runner_get_handler():
     type(makey_mock).makey = makey_p
     runner_p = PropertyMock()
     type(makey_mock).runner = runner_p
-    handler_p = PropertyMock()
-    handler_p.__getitem__ = MagicMock(return_value=23)
-    registry_p = PropertyMock(return_value=dict(runner=handler_p))
-    type(makey_mock).registry = registry_p
+    runners_p = PropertyMock(return_value=dict(x=23))
+    type(makey_mock).runners = runners_p
     runner = Runner(makey_mock)
     result = runner.get_handler("x")
     assert result == 23
-    assert handler_p.__getitem__.call_args[0] == ('x', )
+    assert runners_p.called
 
 
 def test_runner_root():

@@ -7,7 +7,7 @@ from makeyfile.runners.shell import ShellRunner
 
 
 def test_runners_py_resolve_runner():
-    runner = ShellRunner()
+    runner = ShellRunner('x')
     result = runner.resolve("some string")
     assert result == 'some string'
     result = runner.resolve(["1", "2", "3 and 4"])
@@ -15,7 +15,7 @@ def test_runners_py_resolve_runner():
 
 
 def test_runners_py_call():
-    runner = ShellRunner()
+    runner = ShellRunner('x')
 
     def _cb(command, *args, **kwargs):
         assert command == subprocess.call
@@ -28,5 +28,5 @@ def test_runners_py_call():
         assert kwargs['shell'] is True
         return 23
 
-    result = runner(_cb, "bar", "baz", "1", "2", "3")
+    result = runner(_cb, "baz", "1", "2", "3")
     assert result == 23

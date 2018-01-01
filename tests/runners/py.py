@@ -11,7 +11,7 @@ from makeyfile.runners.py import PythonRunner
 
 
 def test_runners_py_resolve_module():
-    runner = PythonRunner()
+    runner = PythonRunner('x')
 
     with patch("makeyfile.runners.py.import_module") as m:
         m.return_value = 23
@@ -29,7 +29,7 @@ def test_runners_py_resolve_module():
 
 
 def test_runners_py_resolve_callable():
-    runner = PythonRunner()
+    runner = PythonRunner('x')
     module_m = MagicMock()
     run_p = PropertyMock(return_value=23)
     type(module_m).BazRun = run_p
@@ -39,7 +39,7 @@ def test_runners_py_resolve_callable():
 
 
 def test_runners_py_resolve_callable_bad():
-    runner = PythonRunner()
+    runner = PythonRunner('x')
     error = AttributeError('oops')
 
     # magic mock doesnt handle AttributeError side effects
@@ -58,7 +58,7 @@ def test_runners_py_resolve_callable_bad():
 
 
 def test_runners_py_resolve_runner():
-    runner = PythonRunner()
+    runner = PythonRunner('x')
 
     patches = [
         patch("makeyfile.runners.py.PythonRunner.resolve_module"),
@@ -74,7 +74,7 @@ def test_runners_py_resolve_runner():
 
 
 def test_runners_py_call():
-    runner = PythonRunner()
+    runner = PythonRunner('x')
 
     def _cb(command, *args):
         assert command == "baz"

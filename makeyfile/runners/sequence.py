@@ -23,6 +23,3 @@ class SequenceRunner(BaseRunner):
              else None)
             for command
             in commands)
-
-    def resolve(self, command):
-        return command

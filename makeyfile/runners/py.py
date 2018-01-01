@@ -8,25 +8,28 @@ from .base import BaseRunner
 
 class PythonRunner(BaseRunner):
 
-    def __call__(self, cb, command, *args):
-        return cb(command, *args[1:])
+    def parse_callable(self, command):
+        return command.split('.')[-1]
+
+    def parse_module(self, command):
+        return '.'.join(command.split('.')[:-1])
 
     def resolve_module(self, command):
         try:
-            return import_module('.'.join(command.split('.')[:-1]))
+            return import_module(self.parse_module(command))
         except ImportError as e:
             raise MakeyError(
                 ('Misconfigured makey file, callable ("%s") not found'
-                 % '.'.join(command.split('.')[:-1])),
+                 % self.parse_module(command)),
                 e)
 
     def resolve_callable(self, module, command):
         try:
-            return getattr(module, command.split('.')[-1])
+            return getattr(module, self.parse_callable(command))
         except AttributeError as e:
             raise MakeyError(
                 ('Misconfigured makey file, callable ("%s") not found'
-                 % command.split('.')[-1]),
+                 % self.parse_callable(command)),
                 e)
 
     def resolve(self, command):

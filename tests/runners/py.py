@@ -77,9 +77,9 @@ def test_runners_py_call():
     runner = PythonRunner('x')
 
     def _cb(command, *args):
-        assert command == "baz"
+        assert command == "bar"
         assert args == (2, 3)
         return 23
 
-    result = runner(_cb, "bar", "baz", 1, 2, 3)
+    result = runner(_cb, "bar", 1, 2, 3)
     assert result == 23

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from collections import OrderedDict
+from contextlib import nested
 
 import pytest
 
@@ -44,6 +45,16 @@ def test_resolver_commands():
             ('bar1b', 'foo1')])
 
 
+def test_resolver_get_handler():
+    makey_mock = MagicMock()
+    runners_p = PropertyMock(return_value=dict(foo=23))
+    type(makey_mock).runners = runners_p
+    resolver = Resolver(makey_mock)
+    result = resolver.get_handler("foo")
+    assert result == 23
+    assert runners_p.called
+
+
 def test_resolver_resolve_command():
     makey_mock = MagicMock()
     runner_mock = MagicMock()
@@ -56,17 +67,27 @@ def test_resolver_resolve_command():
     type(makey_mock).runners = runners_p
 
     resolver = Resolver(makey_mock)
-    _patch = patch(
-        'makeyfile.resolver.Resolver.commands',
-        new_callable=PropertyMock)
+    _patches = [
+        patch(
+            'makeyfile.resolver.Resolver.commands',
+            new_callable=PropertyMock),
+        patch(
+            'makeyfile.resolver.Resolver.get_handler')]
 
-    with _patch as m:
-        m.return_value = dict(bar="foo")
+    with nested(*_patches) as (commands_m, handler_m):
+        commands_m.return_value = dict(bar="foo")
         with pytest.raises(UnrecognizedMakeyError):
             resolver.resolve('DOES NOT EXIST')
-        assert m.called
+        assert commands_m.called
 
-    with _patch as m:
-        m.return_value = dict(bar="foo")
+    with nested(*_patches) as (commands_m, handler_m):
+        commands_m.return_value = dict(bar="foo")
+        resolve_m = MagicMock()
+        resolve_m.resolve.return_value = 23
+        handler_m.return_value = resolve_m
         result = resolver.resolve('bar')
-        assert result == ('foo', 'baz')
+        assert handler_m.call_args[0] == ('foo', )
+        assert (
+            resolve_m.resolve.call_args[0]
+            == ('baz',))
+        assert result == ('foo', 23)

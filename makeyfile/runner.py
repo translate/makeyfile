@@ -1,7 +1,9 @@
 
+
 import sys
 from os.path import dirname
 
+from .command import Command
 from .contextmanagers import isolated, runner
 from .exceptions import MakeyError
 from .makeyfile import Makeyfile
@@ -13,6 +15,10 @@ class Runner(object):
         self.makeyfile = makeyfile
         self.makeyfile.runner = self
         self.makey = makeyfile.makey
+
+    @property
+    def command(self):
+        return Command(self.makeyfile)
 
     @property
     def root(self):
@@ -30,11 +36,8 @@ class Runner(object):
     def get_handler(self, handler):
         return self.makeyfile.runners[handler]
 
-    def resolve(self, command):
-        return self.makeyfile.resolver.resolve(command)
-
-    def run(self, *args):
-        handler, resolved = self.resolve(args[0])
+    def run(self, *args, **kwargs):
+        handler, resolved = self.command.resolve(args[0])
         with runner(handler.capitalize(), args[0], resolved) as cb:
             return self.get_handler(handler)(
                 cb, resolved, *args)

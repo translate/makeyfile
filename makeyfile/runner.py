@@ -28,7 +28,7 @@ class Runner(object):
             return self.run(*args)
 
     def get_handler(self, handler):
-        return self.makeyfile.registry["runner"][handler]
+        return self.makeyfile.runners[handler]
 
     def resolve(self, command):
         return self.makeyfile.resolver.resolve(command)
@@ -37,7 +37,7 @@ class Runner(object):
         handler, resolved = self.resolve(args[0])
         with runner(handler.capitalize(), args[0], resolved) as cb:
             return self.get_handler(handler)(
-                cb, self.makeyfile, resolved, *args)
+                cb, resolved, *args)
 
 
 def main():

@@ -3,8 +3,10 @@ from importlib import import_module
 
 from makeyfile.exceptions import MakeyError
 
+from .base import BaseRunner
 
-class PythonRunner(object):
+
+class PythonRunner(BaseRunner):
 
     def __call__(self, cb, makeyfile, command, *args):
         return cb(command, *args[1:])

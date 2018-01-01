@@ -3,9 +3,12 @@ import os
 import subprocess
 
 
-class ShellRunner(object):
+from .base import BaseRunner
 
-    def __call__(self, cb, makeyfile, command, *args):
+
+class ShellRunner(BaseRunner):
+
+    def __call__(self, cb, command, *args):
         extra = ""
         if args[1:]:
             extra = " %s" % " ".join(args[1:])

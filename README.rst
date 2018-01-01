@@ -22,7 +22,7 @@ For development install
 
 .. code-block:: console
 
-  $ pip install -e git+git@github.com:phlax/makeyfile#egg=makeyfile
+  $ pip install -e git+git@github.com:translate/makeyfile#egg=makeyfile
   $ pip install makeyfile[test]
 
 
@@ -117,11 +117,11 @@ For sequences, you cannot specify any additional command line args at runtime.
 
 
 
-.. |build| image:: https://img.shields.io/travis/phlax/makeyfile/master.svg?style=flat-square
+.. |build| image:: https://img.shields.io/travis/translate/makeyfile/master.svg?style=flat-square
         :alt: Build Status
-        :target: https://travis-ci.org/phlax/makeyfile/branches
+        :target: https://travis-ci.org/translate/makeyfile/branches
 
 
-.. |coverage| image:: https://img.shields.io/codecov/c/github/phlax/makeyfile/master.svg?style=flat-square
-        :target: https://codecov.io/gh/phlax/makeyfile/branch/master
+.. |coverage| image:: https://img.shields.io/codecov/c/github/translate/makeyfile/master.svg?style=flat-square
+        :target: https://codecov.io/gh/translate/makeyfile/branch/master
         :alt: Test Coverage

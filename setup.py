@@ -24,7 +24,7 @@ setup(
     version='0.0.1',
     description='Python Makeyfile',
     long_description="Python makeyfile",
-    url='https://github.com/phlax/makeyfile',
+    url='https://github.com/translate/makeyfile',
     author='Ryan Northey',
     author_email='ryan@synca.io',
     license='GPL3',

@@ -1,4 +1,4 @@
-# https://travis-ci.org/#!/phlax/makeyfile
+# https://travis-ci.org/#!/translate/makeyfile
 sudo: false
 language: python
 python:

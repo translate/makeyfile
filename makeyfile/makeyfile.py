@@ -16,7 +16,7 @@ class Makeyfile(object):
         self.runners = Runners(self)
         self.discovery = Discovery()
         self.loader = Loader()
-        self.makey = self.loader.load(self.filepath)
+        self.makey = self.load()
         self.resolver = Resolver(self)
 
     @property

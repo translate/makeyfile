@@ -37,7 +37,7 @@ def test_runner_defaults():
     assert runner.makey == [23]
 
 
-def test_runner_resolve():
+def __test_runner_resolve():
     makey_m = MagicMock()
     makey_makey_p = PropertyMock(return_value=[23])
     type(makey_m).makey = makey_makey_p
@@ -54,6 +54,18 @@ def test_runner_resolve():
     assert result == ('foo0', 'bar0')
 
 
+def test_runner_command():
+    makey_m = MagicMock()
+    makey_makey_p = PropertyMock(return_value=[23])
+    type(makey_m).makey = makey_makey_p
+    runner = Runner(makey_m)
+
+    with patch('makeyfile.runner.Command') as command_m:
+        command_m.return_value = 23
+        command = runner.command
+        assert command == 23
+
+
 def test_runner_run():
     handler = MagicMock(return_value=7)
     makey_mock = MagicMock()
@@ -64,16 +76,21 @@ def test_runner_run():
 
     runner = Runner(makey_mock)
 
-    with patch('makeyfile.runner.Runner.resolve') as resolve_m:
-        with patch('makeyfile.runner.Runner.get_handler') as handler_m:
-            with patch('makeyfile.runner.runner') as runner_m:
-                cm = MagicMock()
-                cm.__enter__.return_value = 23
-                runner_m.return_value = cm
-                resolve_m.return_value = ("somehandler", 2)
-                handler_m.return_value = handler
-                result = runner.run("foo", "bar", "baz")
-                assert resolve_m.call_args[0] == ("foo", )
+    patches = [
+        patch('makeyfile.runner.Runner.command', new_callable=PropertyMock),
+        patch('makeyfile.runner.Runner.get_handler'),
+        patch('makeyfile.runner.runner')]
+
+    with nested(*patches) as (command_p, handler_m, runner_m):
+        resolve_m = MagicMock()
+        resolve_m.resolve.return_value = ("somehandler", 2)
+        command_p.return_value = resolve_m
+        cm = MagicMock()
+        cm.__enter__.return_value = 23
+        runner_m.return_value = cm
+        handler_m.return_value = handler
+        result = runner.run("foo", "bar", "baz", foo=True)
+        assert resolve_m.resolve.call_args[0] == ("foo", )
     assert handler_m.call_args[0] == ("somehandler", )
     assert handler.call_args[0] == (23, 2, 'foo', 'bar', 'baz')
     assert result == 7

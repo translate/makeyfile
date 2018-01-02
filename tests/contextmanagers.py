@@ -56,7 +56,7 @@ def test_cm_isolated_paths(tmpdir):
 
 def test_cm_runner(capsys):
 
-    with runner("foo", "bar", "baz") as cb:
+    with runner("foo", "bar", "baz", verbosity=1) as cb:
 
         def _run(*args, **kwargs):
             out, err = capsys.readouterr()
@@ -72,10 +72,26 @@ def test_cm_runner(capsys):
         assert out == u"<<< foo 'bar' complete  \n"
         assert not err
 
+    with runner("foo", "bar", "baz") as cb:
+
+        def _run(*args, **kwargs):
+            out, err = capsys.readouterr()
+            assert not out
+            assert not err
+            assert args == (1, 2)
+            assert kwargs == dict(other=3)
+            return 0
+
+        result = cb(_run, 1, 2, other=3)
+        assert result == 0
+        out, err = capsys.readouterr()
+        assert not out
+        assert not err
+
 
 def test_cm_runner_fail(capsys):
 
-    with runner("foo", "bar", "baz") as cb:
+    with runner("foo", "bar", "baz", verbosity=1) as cb:
 
         def _run(*args, **kwargs):
             out, err = capsys.readouterr()
@@ -92,10 +108,27 @@ def test_cm_runner_fail(capsys):
         # err?
         assert not err
 
+    with runner("foo", "bar", "baz") as cb:
+
+        def _run(*args, **kwargs):
+            out, err = capsys.readouterr()
+            assert not out
+            assert not err
+            assert args == (1, 2)
+            assert kwargs == dict(other=3)
+            return 4
+
+        result = cb(_run, 1, 2, other=3)
+        assert result == 4
+        out, err = capsys.readouterr()
+        assert not out
+        # err?
+        assert not err
+
 
 def test_cm_runner_fail_result(capsys):
 
-    with runner("foo", "bar", "baz") as cb:
+    with runner("foo", "bar", "baz", verbosity=1) as cb:
 
         def _run(*args, **kwargs):
             out, err = capsys.readouterr()
@@ -112,10 +145,27 @@ def test_cm_runner_fail_result(capsys):
         # err?
         assert not err
 
+    with runner("foo", "bar", "baz") as cb:
+
+        def _run(*args, **kwargs):
+            out, err = capsys.readouterr()
+            assert not out
+            assert not err
+            assert args == (1, 2)
+            assert kwargs == dict(other=3)
+            return "oops"
+
+        result = cb(_run, 1, 2, other=3)
+        assert result == "oops"
+        out, err = capsys.readouterr()
+        assert not out
+        # err?
+        assert not err
+
 
 def test_cm_runner_interrupt(capsys):
 
-    with runner("foo", "bar", "baz") as cb:
+    with runner("foo", "bar", "baz", verbosity=1) as cb:
 
         def _run(*args, **kwargs):
             out, err = capsys.readouterr()
@@ -126,4 +176,17 @@ def test_cm_runner_interrupt(capsys):
         assert result == 0
         out, err = capsys.readouterr()
         assert out == u"<<< foo 'bar' complete  \n"
+        assert not err
+
+    with runner("foo", "bar", "baz") as cb:
+
+        def _run(*args, **kwargs):
+            out, err = capsys.readouterr()
+            assert not out
+            assert not err
+            raise KeyboardInterrupt
+        result = cb(_run, 1, 2, other=3)
+        assert result == 0
+        out, err = capsys.readouterr()
+        assert not out
         assert not err

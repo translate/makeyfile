@@ -80,8 +80,10 @@ def test_runners_sequence_runcommands():
 def test_runners_sequence_run():
     makey_m = MagicMock()
     runner = SequenceRunner(makey_m)
+    makey_m.options.__getitem__.return_value = None
     makey_m.runner.run.return_value = 23
     assert runner._run('foo') == 23
-    assert makey_m.runner.run.call_args[0] == ('foo',)
+    assert makey_m.runner.run.call_args[0] == ('foo', )
+    makey_m.options.__getitem__.return_value = 7
     assert runner._run('bar') == 23
-    assert makey_m.runner.run.call_args[0] == ('bar',)
+    assert makey_m.runner.run.call_args[0] == ('-v7', 'bar',)

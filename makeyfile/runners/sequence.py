@@ -10,16 +10,17 @@ class SequenceRunner(BaseRunner):
         return cb(
             functools.partial(
                 self._runcommands,
-                args[0],
                 commands))
 
     def _run(self, command):
         return self.makeyfile.runner.run(command)
 
-    def _runcommands(self, sequence, commands):
-        return any(
+    def _runcommands(self, commands):
+        result = [
             (command.split(" ")[0]
              if self._run(command)
              else None)
             for command
-            in commands)
+            in commands]
+        if any(result):
+            return filter(lambda x: x, result)

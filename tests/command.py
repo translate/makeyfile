@@ -86,11 +86,10 @@ def test_command_add_args():
         assert result is parser_m
 
 
-def test_command_resolve():
+def test_command_parse_args():
     makey_m = MagicMock()
     command = Command(makey_m)
     parser_m = MagicMock()
-    resolver_m = MagicMock()
     command_m = MagicMock()
     result_p = PropertyMock(return_value=7)
     type(command_m).command = result_p
@@ -98,28 +97,17 @@ def test_command_resolve():
     _patches = [
         patch(
             'makeyfile.command.Command.parser',
-            new_callable=PropertyMock),
-        patch(
-            'makeyfile.command.Command.resolver',
             new_callable=PropertyMock)]
 
-    with nested(*_patches) as (parser_p, resolver_p):
-        parser_m.parse_known_args.return_value = [command_m]
-        parser_p.return_value = 23
+    with nested(*_patches) as (parser_p, ):
+        parser_m.parse_known_args.return_value = [23]
         parser_p.return_value = parser_m
-        resolver_p.return_value = resolver_m
-        resolver_m.resolve.return_value = 23
-        result = command.resolve("X")
-        assert result_p.called
+        result = command.parse_args("X")
         assert (
             parser_m.parse_known_args.call_args[0]
-            == (["X"], ))
-        assert (
-            resolver_m.resolve.call_args[0]
-            == (7, ))
+            == (("X", ), ))
         assert result == 23
-
         parser_m.parse_known_args.side_effect = SystemExit("die!")
 
         with pytest.raises(UnrecognizedMakeyError):
-            result = command.resolve("X")
+            result = command.parse_args("X")

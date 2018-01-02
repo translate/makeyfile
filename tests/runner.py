@@ -46,13 +46,54 @@ def test_runner_resolve():
 
     with _patch as command_m:
         resolve_m = MagicMock()
-        resolve_m.resolve.return_value = (7, 23)
+        parsed_m = MagicMock()
+        verbosity_p = PropertyMock(return_value=43)
+        type(parsed_m).verbosity = verbosity_p
+        command_p = PropertyMock()
+        type(parsed_m).command = command_p
+        resolve_m.parse_args.return_value = parsed_m
+        makey_m.resolver.resolve.return_value = (113, )
         command_m.return_value = resolve_m
         result = runner.resolve("foo", "bar", "baz")
-        assert result == (['foo'], 7, 23)
         assert (
-            resolve_m.resolve.call_args[0]
+            makey_m.options.__setitem__.call_args[0]
+            == ('verbosity', 43))
+        assert verbosity_p.called
+        assert command_p.called
+        assert result == (['foo'], 113)
+        assert (
+            resolve_m.parse_args.call_args[0]
             == ('foo',))
+
+
+def test_runner_resolve_args():
+    makey_m = MagicMock()
+    makey_makey_p = PropertyMock(return_value=[23])
+    type(makey_m).makey = makey_makey_p
+    runner = Runner(makey_m)
+    _patch = patch('makeyfile.runner.Command')
+
+    with _patch as command_m:
+        resolve_m = MagicMock()
+        parsed_m = MagicMock()
+        verbosity_p = PropertyMock(return_value=43)
+        type(parsed_m).verbosity = verbosity_p
+        command_p = PropertyMock()
+        type(parsed_m).command = command_p
+        resolve_m.parse_args.return_value = parsed_m
+        makey_m.resolver.resolve.return_value = (113, )
+        command_m.return_value = resolve_m
+        result = runner.resolve(
+            "-some", "--makey", "-args", "foo", "bar", "baz")
+        assert (
+            makey_m.options.__setitem__.call_args[0]
+            == ('verbosity', 43))
+        assert verbosity_p.called
+        assert command_p.called
+        assert result == (['-some', '--makey', '-args', 'foo'], 113)
+        assert (
+            resolve_m.parse_args.call_args[0]
+            == ('-some', '--makey', '-args', 'foo'))
 
 
 def test_runner_command():

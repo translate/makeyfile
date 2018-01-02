@@ -14,6 +14,7 @@
 	"test-py": "py.test -vv",
 	"test-coverage-py": "py.test -vv --cov-report=term --cov=. -v --duration=25",
 	"flake8": "flake8 .",
-	"send-coverage-py": "codecov"
+	"send-coverage-py": "codecov",
+	"publish": "python setup.py sdist upload"
     }
 }

@@ -38,6 +38,7 @@ def test_makeyfile_defaults(tmpdir):
     assert makey.filepath == makey.discovery.find()
     assert makey.makey['foo'] == 23
     assert makey.command_filename == "makeyfile.commands.json"
+    assert makey.options == dict(verbosity=None)
 
 
 def test_makeyfile_command_filepath(tmpdir):

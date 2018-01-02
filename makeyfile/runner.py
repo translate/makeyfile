@@ -45,7 +45,7 @@ class Runner(object):
             makey_args.append(arg)
             break
         parsed = self.command.parse_args(*makey_args)
-        self.makeyfile.options["verbosity"] = parsed.verbosity
+        self.makeyfile.options["verbosity"] = int(parsed.verbosity)
         return (
             (makey_args, )
             + self.makeyfile.resolver.resolve(parsed.command))
@@ -55,7 +55,8 @@ class Runner(object):
         _runner = runner(
             handler.capitalize(),
             makey_args[-1],
-            resolved)
+            resolved,
+            verbosity=self.makeyfile.options['verbosity'])
         with _runner as cb:
             return self.get_handler(handler)(
                 cb, resolved, *args[len(makey_args) - 1:])

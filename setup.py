@@ -21,7 +21,7 @@ extras_require['test'] = [
 
 setup(
     name='makeyfile',
-    version='0.0.1',
+    version='0.0.2',
     description='Python Makeyfile',
     long_description="Python makeyfile",
     url='https://github.com/translate/makeyfile',

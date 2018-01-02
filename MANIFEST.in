@@ -1,1 +1,2 @@
 include makeyfile/makeyfile.commands.json
+include README.rst

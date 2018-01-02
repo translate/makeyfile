@@ -28,21 +28,23 @@ def isolated(root, scripts, paths, environ):
 
 
 @contextmanager
-def runner(handler, name, command):
-    sys.stdout.write(
-        ">>> %s '%s' started: %s \n"
-        % (handler, name, command))
+def runner(handler, name, command, verbosity=None):
+    if verbosity:
+        sys.stdout.write(
+            ">>> %s '%s' started: %s \n"
+            % (handler, name, command))
 
     def _run(*args, **kwargs):
         try:
             result = args[0](*args[1:], **kwargs)
         except KeyboardInterrupt:
             result = 0
-        sys.stdout.write(
-            "<<< %s '%s' %s %s \n"
-            % (handler,
-               name,
-               result and "failed" or "complete",
-               result if isinstance(result, str) else ""))
+        if verbosity:
+            sys.stdout.write(
+                "<<< %s '%s' %s %s \n"
+                % (handler,
+                   name,
+                   result and "failed" or "complete",
+                   result if isinstance(result, str) else ""))
         return result
     yield _run

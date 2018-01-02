@@ -13,7 +13,13 @@ class SequenceRunner(BaseRunner):
                 commands))
 
     def _run(self, command):
-        return self.makeyfile.runner.run(command)
+        _command = []
+        if self.makeyfile.options["verbosity"]:
+            _command.append(
+                "-v%s"
+                % self.makeyfile.options["verbosity"])
+        _command.append(command)
+        return self.makeyfile.runner.run(*_command)
 
     def _runcommands(self, commands):
         result = [

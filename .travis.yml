@@ -12,7 +12,7 @@ install:
   - git config --global user.name "Travis Runner"
 
 script:
-  - makey travis-run
+  - makey -v travis-run
 
 after_success:
   - makey send-coverage

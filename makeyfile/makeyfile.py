@@ -13,6 +13,9 @@ class Makeyfile(object):
         self.runners = Runners(self)
         self.discovery = Discovery()
         self.loader = Loader()
-        self.filepath = self.discovery.find()
         self.makey = self.loader.load(self.filepath)
         self.resolver = Resolver(self)
+
+    @property
+    def filepath(self):
+        return self.discovery.find()

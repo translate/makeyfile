@@ -6,7 +6,7 @@ from contextlib import nested
 
 import pytest
 
-from mock import MagicMock, patch
+from mock import patch
 
 from makeyfile import makeyfile
 from makeyfile import registry
@@ -36,7 +36,7 @@ def test_makeyfile_defaults(tmpdir):
     assert makey.resolver.makey is makey.makey
     assert isinstance(makey.discovery, Discovery)
     assert makey.filepath == makey.discovery.find()
-    assert makey.makey == dict(foo=23)
+    assert makey.makey['foo'] == 23
     assert makey.command_filename == "makeyfile.commands.json"
 
 
@@ -63,14 +63,16 @@ def test_makeyfile_load_commands(tmpdir):
     with open(makeypath, "wb") as f:
         f.write(json.dumps(dict(foo=23)))
 
-    with patch("makeyfile.makeyfile.Loader") as m:
-        loader_m = MagicMock()
-        loader_m.load.return_value = 23
-        m.return_value = loader_m
+    patches = [
+        patch("makeyfile.makeyfile.Loader.load"),
+        patch("makeyfile.makeyfile.Makeyfile.load")]
+
+    with nested(*patches) as (loader_m, load_m):
+        loader_m.return_value = 23
         makey = Makeyfile()
         result = makey.load_commands()
         assert result == 23
-        assert loader_m.load.call_args[0] == (makey.command_filepath, )
+        assert loader_m.call_args[0] == (makey.command_filepath, )
 
 
 def test_makeyfile_load_makeyfile(tmpdir):
@@ -80,14 +82,16 @@ def test_makeyfile_load_makeyfile(tmpdir):
     with open(makeypath, "wb") as f:
         f.write(json.dumps(dict(foo=23)))
 
-    with patch("makeyfile.makeyfile.Loader") as m:
-        loader_m = MagicMock()
-        loader_m.load.return_value = 23
-        m.return_value = loader_m
+    patches = [
+        patch("makeyfile.makeyfile.Loader.load"),
+        patch("makeyfile.makeyfile.Makeyfile.load")]
+
+    with nested(*patches) as (loader_m, load_m):
+        loader_m.return_value = 23
         makey = Makeyfile()
         result = makey.load_makeyfile()
         assert result == 23
-        assert loader_m.load.call_args[0] == (makey.filepath, )
+        assert loader_m.call_args[0] == (makey.filepath, )
 
 
 def test_makeyfile_load(tmpdir):

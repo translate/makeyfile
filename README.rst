@@ -1,7 +1,7 @@
 makeyfile
 =========
 
-A very minimal runner that allows you to specify shell commands, python
+A minimal runner that allows you to specify shell commands, python
 code, or a sequence containing commands/code.
 
 Inspired by the fact that people end up using ``Make`` to specify
@@ -60,7 +60,7 @@ Example configuration:
 	}
     }
 
-You can also specify shell and pythons paths. These are appended to
+You can also specify shell and python paths. These are appended to
 ``$PYTHONPATH`` and ``$PATH`` before any scripts or code are run.
 
 For example if you have some python code in a folder called ``scripts``
@@ -106,7 +106,7 @@ through to the python callable as ``argv``.
     $ makey python-command0 foo bar # python code receives ["foo", "bar"]
 
 
-For shell commands, calling args (should be) appended to the specified command.
+For shell commands, calling args are appended to the specified command.
 
 .. code-block:: bash
 

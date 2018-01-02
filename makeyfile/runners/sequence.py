@@ -23,4 +23,4 @@ class SequenceRunner(BaseRunner):
             for command
             in commands]
         if any(result):
-            return filter(lambda x: x, result)
+            return "Failed: %s" % filter(lambda x: x, result)

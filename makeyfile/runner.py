@@ -36,11 +36,27 @@ class Runner(object):
     def get_handler(self, handler):
         return self.makeyfile.runners[handler]
 
+    def resolve(self, *args):
+        makey_args = []
+        for arg in args:
+            if arg.startswith("-"):
+                makey_args.append(arg)
+                continue
+            makey_args.append(arg)
+            break
+        return (
+            (makey_args, )
+            + self.command.resolve(" ".join(makey_args)))
+
     def run(self, *args, **kwargs):
-        handler, resolved = self.command.resolve(args[0])
-        with runner(handler.capitalize(), args[0], resolved) as cb:
+        makey_args, handler, resolved = self.resolve(*args)
+        _runner = runner(
+            handler.capitalize(),
+            makey_args[-1],
+            resolved)
+        with _runner as cb:
             return self.get_handler(handler)(
-                cb, resolved, *args)
+                cb, resolved, *args[len(makey_args) - 1:])
 
 
 def main():

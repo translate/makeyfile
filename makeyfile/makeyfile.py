@@ -18,6 +18,7 @@ class Makeyfile(object):
         self.loader = Loader()
         self.makey = self.load()
         self.resolver = Resolver(self)
+        self.options = dict(verbosity=None)
 
     @property
     def filepath(self):

@@ -37,6 +37,24 @@ def test_runner_defaults():
     assert runner.makey == [23]
 
 
+def test_runner_resolve():
+    makey_m = MagicMock()
+    makey_makey_p = PropertyMock(return_value=[23])
+    type(makey_m).makey = makey_makey_p
+    runner = Runner(makey_m)
+    _patch = patch('makeyfile.runner.Command')
+
+    with _patch as command_m:
+        resolve_m = MagicMock()
+        resolve_m.resolve.return_value = (7, 23)
+        command_m.return_value = resolve_m
+        result = runner.resolve("foo", "bar", "baz")
+        assert result == (['foo'], 7, 23)
+        assert (
+            resolve_m.resolve.call_args[0]
+            == ('foo',))
+
+
 def test_runner_command():
     makey_m = MagicMock()
     makey_makey_p = PropertyMock(return_value=[23])
@@ -60,22 +78,22 @@ def test_runner_run():
     runner = Runner(makey_mock)
 
     patches = [
-        patch('makeyfile.runner.Runner.command', new_callable=PropertyMock),
+        patch('makeyfile.runner.Runner.resolve'),
         patch('makeyfile.runner.Runner.get_handler'),
         patch('makeyfile.runner.runner')]
 
-    with nested(*patches) as (command_p, handler_m, runner_m):
-        resolve_m = MagicMock()
-        resolve_m.resolve.return_value = ("somehandler", 2)
-        command_p.return_value = resolve_m
+    with nested(*patches) as (resolve_m, handler_m, runner_m):
+        resolve_m.return_value = (1, 2, 3), "foo0", "bar0"
         cm = MagicMock()
         cm.__enter__.return_value = 23
         runner_m.return_value = cm
         handler_m.return_value = handler
         result = runner.run("foo", "bar", "baz", foo=True)
-        assert resolve_m.resolve.call_args[0] == ("foo", )
-    assert handler_m.call_args[0] == ("somehandler", )
-    assert handler.call_args[0] == (23, 2, 'foo', 'bar', 'baz')
+        assert (
+            resolve_m.call_args[0]
+            == ('foo', 'bar', 'baz'))
+    assert handler_m.call_args[0] == ('foo0',)
+    assert handler.call_args[0] == (23, 'bar0', 'baz')
     assert result == 7
 
 

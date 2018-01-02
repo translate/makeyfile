@@ -44,9 +44,11 @@ class Runner(object):
                 continue
             makey_args.append(arg)
             break
+        parsed = self.command.parse_args(*makey_args)
+        self.makeyfile.options["verbosity"] = parsed.verbosity
         return (
             (makey_args, )
-            + self.command.resolve(" ".join(makey_args)))
+            + self.makeyfile.resolver.resolve(parsed.command))
 
     def run(self, *args, **kwargs):
         makey_args, handler, resolved = self.resolve(*args)

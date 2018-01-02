@@ -42,7 +42,7 @@ def test_runners_sequence_runcommands():
             == [('foo bar baz', ),
                 ('foo0 bar baz', ),
                 ('foo1 bar baz', )])
-        assert result == ['foo', 'foo0', 'foo1']
+        assert result == "Failed: %s" % ['foo', 'foo0', 'foo1']
 
     with patch("makeyfile.runners.sequence.SequenceRunner._run") as m:
         m.return_value = None
@@ -74,7 +74,7 @@ def test_runners_sequence_runcommands():
             == [('foo bar baz', ),
                 ('foo0 bar baz', ),
                 ('foo1 bar baz', )])
-        assert result == ['foo0']
+        assert result == "Failed: %s" % ['foo0']
 
 
 def test_runners_sequence_run():
